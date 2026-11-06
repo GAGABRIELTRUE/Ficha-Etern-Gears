@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Etern Gears — Ficha de Personagem & Inimigo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#231a14; --desk-card:#32241b; --desk-ink:#f3ead3; --desk-muted:#cdbb92;
+  --paper:#f6efdc; --field:#fbf6e9; --ink:#2b2118; --muted:#6b5230; --line:#5a4326; --rule:#cdbb92; --accent:#7a1f1f; --accent-ink:#fbf6e9;
+  --display:'Cinzel',Georgia,serif; --body:'Crimson Pro',Georgia,serif;
+  color-scheme:light;
+}
+body{background:var(--desk);color:var(--desk-ink);font-family:var(--body);font-size:16px;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+*{box-sizing:border-box}
+.wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.bar{display:flex;flex-direction:column;gap:14px}
+.bar p{margin:0;color:var(--desk-muted);line-height:1.4}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:600 16px var(--body);min-height:42px;padding:0 18px;border-radius:6px;border:1.5px solid var(--paper);background:transparent;color:var(--paper);cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+.btn.pri{background:var(--paper);color:var(--ink)}
+.btn.hub{border-color:#c4823f;color:#e6a860}
+.btn.hub:hover{background:#c4823f;color:#181410}
+.btn:focus-visible,a:focus-visible{outline:3px solid #e0b85c;outline-offset:2px}
+#status{min-height:1.4em;color:var(--desk-ink)}
+
+/* Folha */
+.paper{background:var(--paper);color:var(--ink);padding:36px;border-radius:4px;display:flex;flex-direction:column;gap:24px;font-size:16px;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+.head{display:flex;flex-direction:column;gap:2px;margin-bottom:12px}
+.head h1{margin:0;font:700 32px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.eyebrow{color:var(--accent)!important;font-size:12px!important}
+.sec{margin:0 0 12px;padding:7px 14px;border-radius:4px;background:var(--accent);color:var(--accent-ink);font:700 15px var(--display);letter-spacing:.16em;text-transform:uppercase}
+.sub{display:block;margin:0 0 8px;font:700 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lbl{font:500 11px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cap{font:500 10px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center}
+.card{border:1.5px solid var(--line);background:var(--field);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.grid{display:grid;gap:14px 18px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.gs{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.gx{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.fld{display:flex;flex-direction:column;gap:3px;min-width:0}
+.blk{display:flex;flex-direction:column;min-width:0}
+.item{display:flex;flex-direction:column;gap:8px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.with{display:flex;align-items:flex-end;gap:8px}
+.with b{font-weight:600;color:var(--muted);padding-bottom:4px;font-size:18px}
+.with .tx{flex:1}
+.row2{display:grid;grid-template-columns:3fr 1fr;gap:18px}
+
+.tx,.vn,.mn,.bg,.ta{font-family:inherit;color:var(--ink)}
+.tx{width:100%;min-height:30px;border:0;border-bottom:1.5px solid var(--line);border-radius:0;background:transparent;font-size:18px;padding:2px 2px}
+.vn{width:60px;height:46px;border:1.5px solid var(--line);border-radius:6px;background:#fff;text-align:center;font-size:20px}
+.mn{width:44px;height:44px;border:1.5px solid var(--line);border-radius:50%;background:#fff;text-align:center;font-size:18px}
+.bg{width:84px;height:46px;border:1.5px solid var(--line);border-radius:6px;background:#fff;text-align:center;font-size:20px}
+.bg.half{width:62px}
+.ta{width:100%;border:1.5px solid var(--line);border-radius:6px;background-color:var(--field);background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 25px,var(--rule) 25px,var(--rule) 26px);background-attachment:local;line-height:26px;font-size:17px;padding:0 8px;resize:vertical;display:block}
+.tx:focus-visible,.vn:focus-visible,.mn:focus-visible,.bg:focus-visible,.ta:focus-visible{outline:2px solid var(--accent);outline-offset:2px;background-color:#fff}
+.cb{appearance:none;-webkit-appearance:none;width:20px;height:20px;border:1.5px solid var(--line);border-radius:3px;background:#fff;margin:0;flex:none;cursor:pointer;display:inline-grid;place-content:center}
+.cb:checked::after{content:"✕";font-size:14px;line-height:1;color:var(--accent);font-weight:700}
+
+.attr,.bigbox{border:1.5px solid var(--line);border-radius:10px;background:var(--field);display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 8px}
+.arow{display:flex;gap:12px;align-items:flex-end}
+.stk{display:flex;flex-direction:column;align-items:center;gap:3px}
+.hp{display:flex;align-items:center;gap:8px}
+.hp b{font-size:22px;color:var(--muted);font-weight:400}
+.prof{flex-direction:row;justify-content:flex-start;gap:14px}
+.save{display:flex;align-items:center;gap:10px;min-height:32px}
+.save .tx{width:52px;flex:none;text-align:center;min-height:28px}
+.rule{border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--paper)}
+.rule .lbl{color:var(--accent)}
+.rule p{margin:4px 0 0;line-height:1.35;font-size:15px}
+.lvl{display:flex;align-items:flex-start;gap:10px}
+.lvl .cb{margin-top:3px}
+.lvl span.t{display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:17px}
+
+/* Abas */
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{font:700 14px var(--display);letter-spacing:.12em;text-transform:uppercase;padding:0 20px;min-height:42px;display:inline-flex;align-items:center;border-radius:6px;border:1.5px solid #5a4a38;color:var(--desk-muted);text-decoration:none;background:var(--desk-card)}
+.tab[aria-current="page"]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.btn.sm{min-height:34px;padding:0 12px;font-size:14px}
+.filebtn{position:relative}
+.filebtn input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.panel{background:var(--desk-card);border:1px solid #5a4a38;border-radius:8px;padding:12px 16px}
+.panel>summary{cursor:pointer;font:700 13px var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--desk-ink)}
+.libbody{display:flex;flex-direction:column;gap:10px;padding-top:10px}
+#lib-list{display:flex;flex-direction:column}
+.libitem{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 0;border-top:1px solid #5a4a38}
+.libinfo{display:flex;flex-direction:column;flex:1 1 180px;min-width:0}
+.libbtns{display:flex;gap:8px}
+.tx.nm{font-family:var(--display);font-weight:700;font-size:28px;letter-spacing:.06em;min-height:44px}
+.ta.it{font-style:italic}
+.stat{background:var(--field);border-top:3px double var(--accent);border-bottom:3px double var(--accent);padding:16px 14px;display:flex;flex-direction:column;gap:18px}
+
+@media print {
+  @page { size: A4; margin: 12mm; }
+  html, body { background: #fff !important; color: #000 !important; padding: 0 !important; margin: 0 !important; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .wrap { display: block !important; max-width: none !important; margin: 0 !important; }
+  .bar, .actions, .tabs, #status, details.panel, .btn, .hub { display: none !important; }
+  .paper { display: flex !important; box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; margin: 0 !important; break-inside: auto; }
+  .paper[hidden] { display: none !important; }
+  .card, .attr, .bigbox, .rule, .stat { break-inside: avoid; }
+  input, textarea { color: #000 !important; }
+  textarea { overflow: visible !important; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="bar">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <nav class="tabs" aria-label="Tipo de ficha">
+        <a class="tab" id="tab-personagem" href="#personagem" aria-current="page">Personagem</a>
+        <a class="tab" id="tab-inimigo" href="#inimigo">Inimigo / Criatura</a>
+      </nav>
+      <a href="./index.html" class="btn hub">⬅ Abrir Compêndio & Regras</a>
+    </div>
+
+    <p id="intro"></p>
+
+    <div class="actions">
+      <button class="btn pri" id="btn-pdf" type="button" onclick="window.print()">Imprimir / PDF</button>
+      <button class="btn" id="btn-save" type="button">Salvar ficha</button>
+      <button class="btn" id="btn-export" type="button">Exportar JSON</button>
+      <label class="btn filebtn" id="btn-import">Importar JSON<input id="file-in" type="file" accept=".json,application/json"></label>
+      <button class="btn" id="btn-clear" type="button">Limpar ficha</button>
+    </div>
+
+    <div id="status" role="status" aria-live="polite"></div>
+
+    <details class="panel" open>
+      <summary>Fichas Salvas no Navegador <span id="lib-count"></span></summary>
+      <div class="libbody">
+        <div id="lib-list"></div>
+        <p class="muted" style="font-size:13px; color:var(--desk-muted)">As fichas salvas aqui permanecem salvas na memória local deste navegador.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- FOLHA 1: PERSONAGEM -->
+  <div id="sheet" class="paper"></div>
+
+  <!-- FOLHA 2: INIMIGO -->
+  <div id="sheet2" class="paper" hidden></div>
+</div>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)};
+var L=function(t){return '<span class="lbl">'+t+'</span>'};
+var fld=function(id,label,cls){return '<label class="fld '+(cls||'')+'"><input class="tx" id="'+id+'" type="text" autocomplete="off" spellcheck="false">'+L(label)+'</label>'};
+var ta=function(id,label,h,vis){
+  if(vis===undefined)vis=true;
+  return '<div class="blk">'+(vis?'<label class="sub" for="'+id+'">'+label+'</label>':'')+'<textarea class="ta" id="'+id+'" style="height:'+h+'px"'+(vis?'':' aria-label="'+label+'"')+'></textarea></div>';
+};
+var sect=function(t,inner){return '<section class="sect"><h2 class="sec">'+t+'</h2>'+inner+'</section>'};
+var ATTRS=[['for','Força'],['des','Destreza'],['con','Constituição'],['int','Inteligência'],['sab','Sabedoria'],['car','Carisma']];
+
+var identidade=sect('Identidade',
+  '<div class="head"><span class="lbl eyebrow">Registro do aventureiro • Etern Gears</span><h1>Ficha de Personagem</h1></div>'+
+  '<div class="card grid g3">'+fld('nome','Nome do Personagem')+fld('raca','Raça')+fld('classe','Classe')+fld('vertente','Vertente')+fld('nivel','Nível')+
+  '<label class="fld"><span class="with"><input class="tx" id="xp" type="text" autocomplete="off"><b>/ 100</b></span>'+L('Experiência (XP)')+'</label></div>');
+
+var attrs=ATTRS.map(function(a){
+  return '<div class="attr">'+L(a[1])+'<div class="arow">'+
+  '<label class="stk"><input class="vn" id="'+a[0]+'-v" type="text" inputmode="numeric" aria-label="'+a[1]+', valor" autocomplete="off"><span class="cap">Valor</span></label>'+
+  '<label class="stk"><input class="mn" id="'+a[0]+'-m" type="text" aria-label="'+a[1]+', modificador" autocomplete="off"><span class="cap">Mod.</span></label></div></div>';
+}).join('');
+
+var saves=ATTRS.map(function(a){
+  return '<label class="save"><input type="checkbox" class="cb" id="rs-'+a[0]+'" aria-label="Proficiente em '+a[1]+'"><input class="tx" id="rsb-'+a[0]+'" type="text" aria-label="Bônus de '+a[1]+'" autocomplete="off"><span>'+a[1]+'</span></label>';
+}).join('');
+
+var big=function(id,label){return '<label class="bigbox">'+L(label)+'<input class="bg" id="'+id+'" type="text" autocomplete="off"></label>'};
+
+var atributos=sect('Atributos e Estatísticas',
+  '<div class="stack"><div class="grid g3">'+attrs+'</div>'+
+  '<div class="grid g2"><div class="card prof" style="flex-direction:row;align-items:center"><input class="mn" id="prof" type="text" aria-label="Bônus de proficiência" autocomplete="off">'+L('Bônus de Proficiência')+'</div>'+
+  '<div class="card"><div class="sub" style="margin:0">Testes de Resistência (TR)</div><div class="stack" style="gap:4px">'+saves+'</div></div></div>'+
+  '<div class="grid gs">'+
+  '<div class="bigbox">'+L('Pontos de Vida (HP)')+'<div class="hp"><input class="bg half" id="hp-a" type="text" aria-label="HP atual" autocomplete="off"><b>/</b><input class="bg half" id="hp-m" type="text" aria-label="HP máximo" autocomplete="off"></div><span class="cap">Atual / Máximo</span></div>'+
+  big('ca','Classe de Armadura (CA)')+big('desl','Deslocamento')+big('init','Iniciativa')+big('perc','Percepção')+big('dv','Dado de Vida (DV)')+
+  '</div></div>');
+
+var atk=[1,2,3].map(function(i){
+  return '<div class="item"><div class="sub" style="margin:0">Ataque '+i+'</div><div class="grid gx">'+
+  fld('at'+i+'-n','Nome')+fld('at'+i+'-b','Bônus de Ataque')+fld('at'+i+'-d','Dano')+fld('at'+i+'-t','Tipo de Dano')+'</div></div>';
+}).join('');
+
+var combate=sect('Combate',
+  '<div class="stack"><div class="card"><div class="sub" style="margin:0">Ataques Principais</div>'+atk+'</div>'+
+  '<div class="card"><div class="sub" style="margin:0">Regras de Mira</div><div class="grid g3">'+
+  '<div class="rule">'+L('Tronco · Padrão')+'<p>Ataque normal e dano total.</p></div>'+
+  '<div class="rule">'+L('Membros · Rápido')+'<p>Vantagem no ataque. Se acertar, causa metade do dano.</p></div>'+
+  '<div class="rule">'+L('Cabeça · Poderoso')+'<p>Desvantagem no ataque. Se acertar, causa Acerto Crítico automático.</p></div>'+
+  '</div></div></div>');
+
+var tracos=[1,2,3].map(function(i){
+  return '<div class="item"><div class="sub" style="margin:0">Traço '+i+'</div>'+fld('tr'+i+'-n','Nome')+ta('tr'+i+'-d','Descrição do traço '+i,i===3?100:70,false)+'</div>';
+}).join('');
+
+var niveis=[['1','Nível 1'],['2','Nível 2'],['3','Nível 3 · Vertente'],['4','Nível 4'],['5','Nível 5']].map(function(n){
+  return '<div class="item"><div class="sub" style="margin:0">'+n[1]+'</div>'+fld('hc'+n[0]+'-n','Nome')+ta('hc'+n[0]+'-d','Descrição, '+n[1],50,false)+'</div>';
+}).join('');
+
+var habilidades=sect('Habilidades',
+  '<div class="stack"><div class="card"><div class="sub" style="margin:0">Traços Raciais</div>'+tracos+'</div>'+
+  '<div class="card"><div class="sub" style="margin:0">Habilidades de Classe & Vertente</div>'+niveis+'</div>'+
+  '<div class="card">'+ta('recursos','Recursos de Classe (Ki, Fúria, Magia, etc.)',90)+'</div></div>');
+
+var equip=sect('Equipamentos & Moeda',
+  '<div class="stack"><div class="grid g2">'+
+  '<div class="card">'+fld('armadura','Armadura')+fld('escudo','Escudo')+fld('arma1','Arma Principal')+fld('arma2','Arma Secundária')+'</div>'+
+  '<div class="card"><div class="sub" style="margin:0">Dinheiro e Tesouros</div>'+fld('cogilhoes','Cogilhões')+ta('tesouros','Tesouros e Artefatos',70,false)+'</div></div>'+
+  '<div class="card">'+ta('inventario','Inventário & Carga',150)+'</div></div>');
+
+var pocoes=sect('Poções e Consumíveis','<div class="card">'+[1,2,3].map(function(i){
+  return '<div class="row2">'+fld('po'+i,'Poção / Consumível')+fld('pq'+i,'Quantidade')+'</div>';
+}).join('')+'</div>');
+
+var niv=[['Reação Instintiva','Níveis 1–4'],['Reação Tática','Níveis 5–10'],['Reação Preditiva','Níveis 11–16'],['Reação Sobrenatural','Níveis 17–25']].map(function(n,i){
+  return '<label class="lvl"><input type="checkbox" class="cb" id="rn'+(i+1)+'"><span class="t">'+n[0]+'<span class="cap">'+n[1]+'</span></span></label>';
+}).join('');
+
+var reacao=sect('Sistema de Reação','<div class="grid g2"><div class="card">'+
+  '<label class="fld"><span class="with"><input class="tx" id="reac" type="text" autocomplete="off"><b>/ 100</b></span>'+L('Reação disponível')+'</label>'+
+  fld('reac-h','Habilidade de Reação')+ta('reac-e','Efeito',70)+'</div>'+
+  '<div class="card"><div class="sub" style="margin:0">Nível de Reflexos</div><div class="stack">'+niv+'</div></div></div>');
+
+var pers=sect('Personalidade','<div class="grid g2">'+
+  '<div class="card">'+ta('p-tracos','Traços de Personalidade',90)+'</div>'+
+  '<div class="card">'+ta('p-ideais','Ideais',90)+'</div>'+
+  '<div class="card">'+ta('p-vinculos','Vínculos',90)+'</div>'+
+  '<div class="card">'+ta('p-defeitos','Defeitos & Fraquezas',90)+'</div></div>');
+
+var hist=sect('História & Ecos','<div class="stack"><div class="card">'+ta('historia','Origem e Passado',180)+'</div>'+
+  '<div class="card"><div class="sub" style="margin:0">Fragmentos de Memória & Flashbacks</div>'+
+  [1,2,3].map(function(i){return ta('fb'+i,'Eco / Flashback '+i,80)}).join('')+'</div></div>');
+
+var notas=sect('Anotações Gerais','<div class="card">'+ta('notas','Anotações da Campanha',220,false)+'</div>');
+
+var sheet=$('#sheet'), sheet2=$('#sheet2');
+sheet.innerHTML=[identidade,atributos,combate,habilidades,equip,pocoes,reacao,pers,hist,notas].join('');
+
+/* FICHA DO INIMIGO */
+var abil=[1,2,3,4].map(function(i){
+  return '<div class="item"><div class="sub" style="margin:0">Ação / Golpe '+i+'</div>'+fld('ab'+i+'-n','Nome')+ta('ab'+i+'-d','Descrição da habilidade ou ataque '+i,70,false)+'</div>';
+}).join('');
+
+sheet2.innerHTML=
+  '<section class="sect"><div class="head"><span class="lbl eyebrow">Bestiário • Estatísticas de Combate</span>'+
+  '<label class="fld"><input class="tx nm" id="e-nome" type="text" autocomplete="off" spellcheck="false">'+L('Nome do Inimigo / Criatura')+'</label></div>'+
+  '<div class="stat"><div class="blk"><label class="sub" for="e-desc">Descrição & Ecologia</label><textarea class="ta it" id="e-desc" style="height:70px"></textarea></div>'+
+  '<div class="grid gs">'+fld('e-desl','Deslocamento')+fld('e-tam','Tamanho')+fld('e-hp','HP')+fld('e-ca','CA')+fld('e-cd','CD')+fld('e-dano','Dano Base')+'</div></div></section>'+
+  sect('Ações e Habilidades Especiais','<div class="card">'+abil+'</div>');
+
+var FADA={
+  'e-nome':'Fada Territorial',
+  'e-desc':'Pequena criatura mágica que habita as copas das árvores. Apesar da aparência delicada, é territorial e ataca quem invade seu espaço.',
+  'e-desl':'12m (voador)','e-tam':'Pequeno','e-hp':'1d4','e-ca':'10','e-cd':'2','e-dano':'1d2',
+  'ab1-n':'Picada de Luz','ab1-d':'Causa 1d2 de dano mágico.',
+  'ab2-n':'Pólen Cintilante','ab2-d':'Libera partículas que dificultam a visão por 1 turno. TR de Constituição CD 7.'
+};
+
+var TABS={
+  personagem:{el:sheet,nome:'nome',draft:'ficha-personagem-rascunho',intro:'Preencha a ficha do seu herói. O rascunho fica salvo neste navegador; use Salvar ou Exportar para guardar cópias.'},
+  inimigo:{el:sheet2,nome:'e-nome',draft:'ficha-inimigo-rascunho',intro:'Ficha rápida para monstros e adversários. Edite os valores ou limpe para criar uma nova ameaça.'}
+};
+
+var cur='personagem';
+var status=$('#status');
+function say(t){status.textContent=t}
+
+function fields(el){return Array.prototype.slice.call(el.querySelectorAll('input[id],textarea[id]'))}
+function collect(el){var o={};fields(el).forEach(function(f){o[f.id]=f.type==='checkbox'?f.checked:f.value});return o}
+function apply(el,o){
+  fields(el).forEach(function(f){
+    var v=o[f.id];
+    if(f.type==='checkbox')f.checked=v===true;
+    else f.value=(typeof v==='string'||typeof v==='number')?String(v):'';
+  });
+}
+
+function saveDraft(k){
+  try { localStorage.setItem(TABS[k].draft, JSON.stringify(collect(TABS[k].el))); return true; }
+  catch(e) { say('Não foi possível salvar automaticamente neste navegador. Use Exportar JSON.'); return false; }
+}
+function loadDraft(k){
+  try{var raw=localStorage.getItem(TABS[k].draft);if(!raw)return false;apply(TABS[k].el,JSON.parse(raw));return true}catch(e){return false}
+}
+
+loadDraft('personagem');
+if(!loadDraft('inimigo'))apply(sheet2,FADA);
+
+Object.keys(TABS).forEach(function(k){
+  TABS[k].el.addEventListener('input',function(){saveDraft(k)});
+  TABS[k].el.addEventListener('change',function(){saveDraft(k)});
+});
+
+function nameOf(){return (($('#'+TABS[cur].nome)||{}).value||'').trim()}
+function slug(t){return String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80)||'sem-nome'}
+function baseName(){return 'ficha-'+cur+'-'+slug(nameOf())}
+function fmtDate(iso){try{return new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}catch(e){return ''}}
+
+/* BANCO LOCAL */
+var LKEY='ficha-biblioteca';
+function localRead(){try{return JSON.parse(localStorage.getItem(LKEY)||'[]')}catch(e){return []}}
+function localWrite(a){
+  try { localStorage.setItem(LKEY, JSON.stringify(a)); return true; }
+  catch(e) { say('Não foi possível gravar a biblioteca local. Exporte a ficha em JSON para não perdê-la.'); return false; }
+}
+
+function renderLib(){
+  var box=$('#lib-list');box.textContent='';
+  var items=localRead().filter(function(d){return d.tipo===cur});
+  $('#lib-count').textContent='('+items.length+')';
+  if(!items.length){
+    var p=document.createElement('p');p.className='muted';
+    p.textContent='Nenhuma ficha de '+(cur==='inimigo'?'inimigo':'personagem')+' salva localmente.';
+    box.appendChild(p);return;
+  }
+  items.forEach(function(d){
+    var row=document.createElement('div');row.className='libitem';
+    var info=document.createElement('div');info.className='libinfo';
+    var n=document.createElement('strong');n.textContent=d.nome||'Sem nome';
+    var m=document.createElement('span');m.style.fontSize='12px';m.style.color='var(--desk-muted)';m.textContent='Salva em '+fmtDate(d.salvoEm);
+    info.appendChild(n);info.appendChild(m);
+    var btns=document.createElement('div');btns.className='libbtns';
+    
+    var load=document.createElement('button');load.className='btn sm';load.textContent='Carregar';
+    load.onclick=function(){apply(TABS[cur].el,d.valores||{});saveDraft(cur);say('Ficha carregada: '+(d.nome||'sem nome')+'.')};
+    
+    var del=document.createElement('button');del.className='btn sm';del.textContent='Excluir';
+    var timer=null;
+    del.onclick=function(){
+      if(del.dataset.armed!=='1'){
+        del.dataset.armed='1';del.textContent='Confirmar?';
+        timer=setTimeout(function(){del.dataset.armed='0';del.textContent='Excluir'},3500);return;
+      }
+      clearTimeout(timer);
+      var arr=localRead().filter(function(x){return x.id!==d.id});
+      localWrite(arr);renderLib();say('Ficha excluída.');
+    };
+    btns.appendChild(load);btns.appendChild(del);
+    row.appendChild(info);row.appendChild(btns);box.appendChild(row);
+  });
+}
+
+function show(name){
+  if(!TABS[name])name='personagem';
+  cur=name;
+  sheet.hidden=name!=='personagem';
+  sheet2.hidden=name!=='inimigo';
+  $('#tab-personagem').setAttribute('aria-current',name==='personagem'?'page':'false');
+  $('#tab-inimigo').setAttribute('aria-current',name==='inimigo'?'page':'false');
+  $('#intro').textContent=TABS[name].intro;
+  renderLib();
+}
+
+window.addEventListener('hashchange',function(){show(location.hash.replace('#',''))});
+show(location.hash.replace('#',''));
+
+/* BOTÕES DE AÇÃO */
+$('#btn-save').addEventListener('click',function(){
+  var nome=nameOf();
+  if(!nome){say('Por favor, informe um nome antes de salvar.');return}
+  var id=cur+'-'+slug(nome);
+  var arr=localRead().filter(function(d){return d.id!==id});
+  arr.unshift({id:id,tipo:cur,nome:nome,valores:collect(TABS[cur].el),salvoEm:new Date().toISOString()});
+  localWrite(arr);renderLib();say('Ficha salva: '+nome);
+});
+
+$('#btn-export').addEventListener('click',function(){
+  var payload={versao:1,tipo:cur,nome:nameOf(),valores:collect(TABS[cur].el),salvoEm:new Date().toISOString()};
+  var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=baseName()+'.json';
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  say('Arquivo JSON exportado com sucesso.');
+});
+
+$('#file-in').addEventListener('change',function(){
+  var f=this.files&&this.files[0];
+  if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var o=JSON.parse(String(r.result));
+      if(!o || !o.valores || typeof o.valores !== 'object' || Array.isArray(o.valores)) throw new Error();
+      var destino = o.tipo && TABS[o.tipo] ? o.tipo : cur;
+      apply(TABS[destino].el,o.valores);
+      if(destino !== cur) show(destino);
+      saveDraft(destino);
+      say('Ficha importada: '+(o.nome||'sem nome'));
+    }catch(e){say('Arquivo JSON inválido.');}
+  };
+  r.readAsText(f);
+  this.value='';
+});
+
+$('#btn-clear').addEventListener('click',function(){
+  if(this.dataset.armed!=='1'){
+    this.dataset.armed='1';this.textContent='Confirmar limpeza?';say('Clique novamente para confirmar a limpeza total dos campos.');
+    var self=this;setTimeout(function(){self.dataset.armed='0';self.textContent='Limpar ficha';say('')},3500);return;
+  }
+  this.dataset.armed='0';this.textContent='Limpar ficha';
+  apply(TABS[cur].el,{});saveDraft(cur);say('Ficha limpa.');
+});
+})();
+</script>
+</body>
+</html>
